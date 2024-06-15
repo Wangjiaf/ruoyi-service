@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.service.mapper.PresentMoneyMapper">
+
+    <resultMap type="PresentMoney" id="PresentMoneyResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="presentUser"    column="present_user"    />
+        <result property="presentMoney"    column="present_money"    />
+    </resultMap>
+
+    <sql id="selectPresentMoneyVo">
+        select id, create_by, create_time, update_by, update_time, remark, del_flag, present_user, present_money from present_money
+    </sql>
+
+    <select id="selectPresentMoneyList" parameterType="PresentMoney" resultMap="PresentMoneyResult">
+        <include refid="selectPresentMoneyVo"/>
+        <where>
+            del_flag = '0'
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="createTime != null "> and create_time = #{createTime}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+            <if test="updateTime != null "> and update_time = #{updateTime}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+            <if test="presentUser != null  and presentUser != ''"> and present_user like concat('%', #{presentUser}, '%')</if>
+            <if test="params.beginPresentMoney != null and params.beginPresentMoney != '' and params.endPresentMoney != null and params.endPresentMoney != ''"> and present_money between #{params.beginPresentMoney} and #{params.endPresentMoney}</if>
+        </where>
+    </select>
+
+    <select id="selectPresentMoneyById" parameterType="Long" resultMap="PresentMoneyResult">
+        <include refid="selectPresentMoneyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPresentMoney" parameterType="PresentMoney" useGeneratedKeys="true" keyProperty="id">
+        insert into present_money
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="presentUser != null">present_user,</if>
+            <if test="presentMoney != null">present_money,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="presentUser != null">#{presentUser},</if>
+            <if test="presentMoney != null">#{presentMoney},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePresentMoney" parameterType="PresentMoney">
+        update present_money
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="presentUser != null">present_user = #{presentUser},</if>
+            <if test="presentMoney != null">present_money = #{presentMoney},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePresentMoneyById" parameterType="Long">
+        delete from present_money where id = #{id}
+    </delete>
+
+    <delete id="deletePresentMoneyByIds" parameterType="String">
+        delete from present_money where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
